@@ -1,2 +1,2 @@
-// eslint-disable-next-line node/no-unpublished-import
-export * from './lib';
+/* eslint-disable node/no-unsupported-features/es-syntax */
+export * from './lib/src/index';
