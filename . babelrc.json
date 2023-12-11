@@ -1,0 +1,20 @@
+{
+  "presets": [
+    "@parcel/babel-preset-env",
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    "babel-plugin-transform-glob-import",
+    "@parcel/babel-plugin-transform-runtime",
+    ["import", {
+      "libraryName": "antd",
+      "libraryDirectory": "lib",
+      "style": false
+    }, "antd"],
+    ["import", {
+      "libraryName": "antd-new",
+      "libraryDirectory": "lib",
+      "style": "css"
+    }, "antd-new"]
+  ]
+}

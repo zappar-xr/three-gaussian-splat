@@ -1,0 +1,49 @@
+{
+  "name": "@zappar/three-gaussian-splat",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "rm -rf lib && tsc -p tsconfig.build.json",
+    "start": "parcel ./tests/index.html",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "fix": "gts fix",
+    "toc": "bash ./gh-md-toc.sh --no-backup README.md"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "lib/**/*"
+  ],
+  "author": "Zappar Limited",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/emscripten": "^1.39.10",
+    "@types/node": "^14.11.2",
+    "@types/three": "^0.157.2",
+    "gts": "^3.1.1",
+    "lil-gui": "^0.18.2",
+    "parcel": "^2.10.3",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "three": "^0.156.1",
+    "typescript": "^4.9.4"
+  },
+  "zexports": [
+    "./lib/**/*"
+  ],
+  "peerDependencies": {
+    "three": "*"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "comlink": "4.4.1"
+  }
+}

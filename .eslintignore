@@ -1,0 +1,7 @@
+build/
+dist/
+.parcel-cache/
+index.js
+index.d.ts
+lib/
+cpp-sorter/

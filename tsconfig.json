@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "es2020",
+        "esModuleInterop": true,
+        "target": "ES2021",
+        "strictNullChecks": true,
+        "moduleResolution": "node",
+        "declaration": true,
+        "outDir": "lib"
+    },
+    "include": ["src", "tests"]
+}
