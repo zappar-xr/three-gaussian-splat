@@ -12,26 +12,24 @@ You may also be interested in [Mattercraft](https://zap.works/mattercraft/), a b
 <summary>Click to expand table of contents</summary>
 
 <!--ts-->
+   * [Gaussian Splats for ThreeJS](#gaussian-splats-for-threejs)
+      * [Table Of Contents](#table-of-contents)
+      * [Starting Development](#starting-development)
+         * [NPM Package](#npm-package)
+         * [Quick Start](#quick-start)
+      * [GaussianSplatMesh](#gaussiansplatmesh)
+         * [Loading](#loading)
+         * [Adding To Scene](#adding-to-scene)
+         * [Updating the mesh](#updating-the-mesh)
+      * [Masking](#masking)
+         * [Sphere](#sphere)
+         * [Plane](#plane)
+         * [Helper](#helper)
+         * [Performance](#performance)
+      * [How do i get .splat files?](#how-do-i-get-splat-files)
+      * [License](#license)
 
-- [Gaussian Splats for ThreeJS](#gaussian-splats-for-threejs)
-  - [Table Of Contents](#table-of-contents)
-  - [Starting Development](#starting-development)
-    - [Standalone Download](#standalone-download)
-    - [CDN](#cdn)
-    - [NPM Package](#npm-package)
-    - [Quick Start](#quick-start)
-  - [GaussianSplatMesh](#gaussiansplatmesh)
-    - [Loading](#loading)
-    - [Adding To Scene](#adding-to-scene)
-    - [Updating the mesh](#updating-the-mesh)
-  - [Masking](#masking)
-    - [Sphere](#sphere)
-    - [Plane](#plane)
-    - [Helper](#helper)
-  - [How do i get .splat files?](#how-do-i-get-splat-files)
-  - [License](#license)
-
-<!-- Added by: deim, at: Wed Nov 29 18:39:28 WITA 2023 -->
+<!-- Added by: deim, at: Mon Dec 11 23:05:54 WITA 2023 -->
 
 <!--te-->
 </details>
