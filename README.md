@@ -17,6 +17,7 @@ You may also be interested in [Mattercraft](https://zap.works/mattercraft/), a b
       * [Starting Development](#starting-development)
          * [NPM Package](#npm-package)
          * [Quick Start](#quick-start)
+            * [GitHub Templates](#github-templates)
       * [GaussianSplatMesh](#gaussiansplatmesh)
          * [Loading](#loading)
          * [Adding To Scene](#adding-to-scene)
@@ -29,7 +30,7 @@ You may also be interested in [Mattercraft](https://zap.works/mattercraft/), a b
       * [How do i get .splat files?](#how-do-i-get-splat-files)
       * [License](#license)
 
-<!-- Added by: root, at: Mon Dec 11 17:09:06 UTC 2023 -->
+<!-- Added by: root, at: Mon Dec 11 18:57:06 UTC 2023 -->
 
 <!--te-->
 </details>
@@ -93,6 +94,13 @@ function animation() {
   renderer.render(scene, camera);
 }
 ```
+
+#### GitHub Templates
+
+Explore our template project at this link: [Three Gaussian Splat Example on GitHub](https://github.com/zappar-xr/three-gaussian-splat-example)
+
+For a live preview, visit:
+[Three Gaussian Splat Example Preview](https://zappar-xr.github.io/three-gaussian-splat-example/)
 
 ## GaussianSplatMesh
 
