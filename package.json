@@ -14,7 +14,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "rm -rf lib && tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "start": "parcel ./tests/index.html",
     "lint": "gts lint",
     "clean": "gts clean",
