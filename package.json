@@ -4,6 +4,12 @@
   "description": "",
   "main": "index.js",
   "types": "index.d.ts",
+  "repository": {
+    "url": "git+https://github.com/zappar-xr/three-gaussian-splat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zappar-xr/three-gaussian-splat/issues"
+  },
   "directories": {
     "lib": "lib"
   },
@@ -18,7 +24,8 @@
   "files": [
     "index.js",
     "index.d.ts",
-    "lib/**/*"
+    "lib/**/*",
+    "preview/**/*"
   ],
   "author": "Zappar Limited",
   "license": "MIT",
