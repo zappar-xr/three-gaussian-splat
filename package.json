@@ -30,7 +30,6 @@
   "author": "Zappar Limited",
   "license": "MIT",
   "devDependencies": {
-    "@types/emscripten": "^1.39.10",
     "@types/node": "^14.11.2",
     "@types/three": "^0.157.2",
     "gts": "^3.1.1",
@@ -51,6 +50,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@types/emscripten": "^1.39.10",
     "comlink": "4.4.1"
   }
 }
