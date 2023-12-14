@@ -3,8 +3,8 @@ import {SplatLoader} from '../loaders/SplatLoader';
 import type {WasmSorter} from '../../cpp-sorter/worker';
 import {Remote, transfer, wrap} from 'comlink';
 
-const wasmWorkerPath = new URL('../../cpp-sorter/worker', import.meta.url).href;
-const SortWorker = wrap<new (vertexCount: number, globalBuffer: Uint8Array) => WasmSorter>(new Worker(wasmWorkerPath, {type: 'module'}));
+const worker = new Worker(new URL('../../cpp-sorter/worker', import.meta.url), {type: 'module'});
+const SortWorker = wrap<new (vertexCount: number, globalBuffer: Uint8Array) => WasmSorter>(worker);
 export class GaussianSplatGeometry extends THREE.InstancedBufferGeometry {
   private worker: Remote<WasmSorter>;
 
