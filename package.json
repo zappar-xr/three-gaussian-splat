@@ -31,13 +31,13 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.11.2",
-    "@types/three": "^0.157.2",
+    "@types/three": "0.150.1",
     "gts": "^3.1.1",
     "lil-gui": "^0.18.2",
     "parcel": "^2.10.3",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
-    "three": "^0.156.1",
+    "three": "^0.150.1",
     "typescript": "^4.9.4"
   },
   "zexports": [

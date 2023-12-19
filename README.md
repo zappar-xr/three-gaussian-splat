@@ -30,7 +30,7 @@ You may also be interested in [Mattercraft](https://zap.works/mattercraft/), a b
       * [How do i get .splat files?](#how-do-i-get-splat-files)
       * [License](#license)
 
-<!-- Added by: root, at: Thu Dec 14 11:53:28 UTC 2023 -->
+<!-- Added by: root, at: Tue Dec 19 18:30:05 UTC 2023 -->
 
 <!--te-->
 </details>
@@ -104,12 +104,10 @@ For a live preview, visit:
 
 ## GaussianSplatMesh
 
-You can use the `GaussianSplatMesh` to construct the splat mesh. It takes 4 arguments.
+You can use the `GaussianSplatMesh` to construct the splat mesh. It takes 2 arguments.
 
 ```ts
 const splat = new ZapSplat.GaussianSplatMesh(
-  camera, // THREE.PerspectiveCamera
-  renderer, // THREE.WebGLRenderer
   url, // url to .splat file
   maxSplats // Maximum number of splats to render. Default = Infinity.
 );
@@ -143,7 +141,10 @@ scene.add(splat);
 The mesh needs to be updated before rendering. This can be done by calling the `update` function.
 
 ```ts
-splat.update();
+splat.update(
+  camera, // THREE.PerspectiveCamera
+  renderer // THREE.WebGLRenderer
+);
 ```
 
 ## Masking
@@ -159,7 +160,7 @@ A `MaskingShere` can be added to the `GaussianSplatMesh` to hide anything outsid
 <img src="preview/mask_sphere.png" width="500" />
 
 ```ts
-const splat = new ZapSplat.GaussianSplatMesh(camera, renderer, bonsai, Infinity);
+const splat = new ZapSplat.GaussianSplatMesh(bonsai, Infinity);
 splat.load();
 scene.add(splat);
 
@@ -173,7 +174,7 @@ maskSphere.visible = false;
 renderer.setAnimationLoop(animation);
 
 function animation() {
-  splat.update();
+  splat.update(camera, renderer);
   renderer.render(scene, camera);
 }
 ```
@@ -185,7 +186,7 @@ A `MaskingPlane` can be added to the `GaussianSplatMesh` to hide anything in the
 <img src="preview/mask_plane.png" width="500" />
 
 ```ts
-const splat = new ZapSplat.GaussianSplatMesh(camera, renderer, bonsai, Infinity);
+const splat = new ZapSplat.GaussianSplatMesh(bonsai, Infinity);
 splat.load();
 scene.add(splat);
 
@@ -195,7 +196,7 @@ splat.addMaskMesh(maskPlane);
 renderer.setAnimationLoop(animation);
 
 function animation() {
-  splat.update();
+  splat.update(camera, renderer);
   renderer.render(scene, camera);
 }
 ```

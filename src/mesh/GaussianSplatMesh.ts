@@ -10,22 +10,33 @@ export class GaussianSplatMesh extends THREE.Mesh<GaussianSplatGeometry, Gaussia
   private _maskMeshSphere?: MaskingSphere;
   private _maskMeshPlane?: MaskingPlane;
 
-  constructor(private camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer, private url: string, maxSplats = Infinity) {
-    const material = new GaussianSplatMaterial(camera, renderer);
+  private currentCamera?: THREE.PerspectiveCamera | THREE.Camera;
+  private renderer?: THREE.WebGLRenderer;
+
+  constructor(private url: string, maxSplats = Infinity) {
+    const material = new GaussianSplatMaterial();
     const geometry = new GaussianSplatGeometry(maxSplats);
     super(geometry, material);
     this.rotation.x = Math.PI;
   }
 
-  public async load(loadingManager?: THREE.LoadingManager) {
+  public load(loadingManager?: THREE.LoadingManager) {
     return this.geometry.load(this.url, loadingManager);
   }
 
   private _normal = new THREE.Vector3(0, 0, 1);
 
-  public update() {
+  public update(camera: THREE.PerspectiveCamera | THREE.Camera, renderer: THREE.WebGLRenderer) {
+    if (this.currentCamera !== camera || this.renderer !== renderer) {
+      this.material.initialize(camera, renderer);
+    }
+
+    this.currentCamera = camera;
+    this.renderer = renderer;
     this.updateMatrixWorld(true);
-    this.geometry.update(this.camera, this.matrixWorld);
+
+    this.geometry.update(camera, this.matrixWorld);
+
     if (this._maskMeshSphere) {
       this.material.sphereCenter = this._maskMeshSphere.position;
       this.material.sphereRadius = this._maskMeshSphere.scale.x;

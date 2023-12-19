@@ -14,56 +14,67 @@ export class GaussianSplatGeometry extends THREE.InstancedBufferGeometry {
 
   private viewProj: number[] = [];
   private _sortRunning = false;
-  private _loaded = false;
 
-  public async update(camera: THREE.PerspectiveCamera, meshMatrixWorld: THREE.Matrix4) {
-    if (this._sortRunning) return;
+  public loading = false;
+  private _initialized = false;
+
+  public async update(camera: THREE.PerspectiveCamera | THREE.Camera, meshMatrixWorld: THREE.Matrix4) {
+    if (this._sortRunning || !this._initialized || !this.worker) {
+      return;
+    }
+
     camera.updateMatrixWorld(true);
 
     this.viewProj = new THREE.Matrix4().multiply(camera.projectionMatrix).multiply(camera.matrixWorldInverse).multiply(meshMatrixWorld).elements;
 
-    if (this.worker && this._loaded) {
-      this._sortRunning = true;
-      const viewProj = new Float32Array(this.viewProj);
-      const result = await this.worker.runSort(viewProj);
+    this._sortRunning = true;
+    const viewProj = new Float32Array(this.viewProj);
+    const result = await this.worker.runSort(viewProj);
 
-      const {quat, scale, center, color} = this.extractViews(result);
+    const {quat, scale, center, color} = this.extractViews(result);
 
-      (this.attributes.color as THREE.InstancedBufferAttribute).array = color;
-      (this.attributes.quat as THREE.InstancedBufferAttribute).array = quat;
-      (this.attributes.scale as THREE.InstancedBufferAttribute).array = scale;
-      (this.attributes.center as THREE.InstancedBufferAttribute).array = center;
+    (this.attributes.color as THREE.InstancedBufferAttribute).array = color;
+    (this.attributes.quat as THREE.InstancedBufferAttribute).array = quat;
+    (this.attributes.scale as THREE.InstancedBufferAttribute).array = scale;
+    (this.attributes.center as THREE.InstancedBufferAttribute).array = center;
 
-      this.attributes.color.needsUpdate = true;
-      this.attributes.quat.needsUpdate = true;
-      this.attributes.scale.needsUpdate = true;
-      this.attributes.center.needsUpdate = true;
+    this.attributes.color.needsUpdate = true;
+    this.attributes.quat.needsUpdate = true;
+    this.attributes.scale.needsUpdate = true;
+    this.attributes.center.needsUpdate = true;
 
-      await Promise.all([
-        new Promise<void>(resolve => (this.attributes.color as THREE.InstancedBufferAttribute).onUpload(resolve)),
-        new Promise<void>(resolve => (this.attributes.quat as THREE.InstancedBufferAttribute).onUpload(resolve)),
-        new Promise<void>(resolve => (this.attributes.scale as THREE.InstancedBufferAttribute).onUpload(resolve)),
-        new Promise<void>(resolve => (this.attributes.center as THREE.InstancedBufferAttribute).onUpload(resolve)),
-      ]);
+    await Promise.all([
+      new Promise<void>(resolve => (this.attributes.color as THREE.InstancedBufferAttribute).onUpload(resolve)),
+      new Promise<void>(resolve => (this.attributes.quat as THREE.InstancedBufferAttribute).onUpload(resolve)),
+      new Promise<void>(resolve => (this.attributes.scale as THREE.InstancedBufferAttribute).onUpload(resolve)),
+      new Promise<void>(resolve => (this.attributes.center as THREE.InstancedBufferAttribute).onUpload(resolve)),
+    ]);
 
-      await this.worker.returnBuffer(transfer(result, [result]));
+    await this.worker.returnBuffer(transfer(result, [result]));
 
-      this._sortRunning = false;
-    }
+    this._sortRunning = false;
   }
 
   async load(url: string, loadingManager?: THREE.LoadingManager) {
-    const loader = new SplatLoader(async (data, bytesRead) => {
+    if (this.loading) {
+      console.warn('Geometry is already loading or loaded');
+      return;
+    }
+
+    this.loading = true;
+
+    try {
+      const loader = new SplatLoader(undefined, loadingManager);
+      const {data, bytesRead} = await loader.loadAsync(url);
       const vertexCount = Math.floor(bytesRead / ROW_LENGTH);
       const bufferInfo = trimBuffer(data, this.maxSplats, vertexCount);
       this.worker = await new SortWorker(bufferInfo.vertexCount, transfer(bufferInfo.buffer, [bufferInfo.buffer.buffer]));
-      this.vertexCount = vertexCount;
       await this.worker.load();
-      await this.initAttributes();
-      this._loaded = true;
-    }, loadingManager);
-
-    await loader.loadAsync(url);
+      this.vertexCount = vertexCount;
+      this.initAttributes();
+    } catch (error) {
+      console.error('Error loading geometry:', error);
+    }
   }
 
   private vertexCount = 0;
@@ -82,6 +93,8 @@ export class GaussianSplatGeometry extends THREE.InstancedBufferGeometry {
     this.attributes.position.needsUpdate = true;
     this.setIndex(new THREE.BufferAttribute(new Uint16Array([0, 1, 2, 2, 3, 0]), 1, true));
     this.instanceCount = Math.min(quat.length / 4, this.maxSplats);
+    this.loading = false;
+    this._initialized = true;
   }
 
   private extractViews(receivedBuffer: ArrayBuffer): {quat: Float32Array; scale: Float32Array; center: Float32Array; color: Float32Array} {
@@ -106,7 +119,6 @@ export class GaussianSplatGeometry extends THREE.InstancedBufferGeometry {
   }
 
   public dispose() {
-    this._loaded = false;
     this.worker?.dispose();
     return super.dispose();
   }

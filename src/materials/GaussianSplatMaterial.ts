@@ -10,7 +10,21 @@ const computeFocalLengths = (width: number, height: number, fov: number, aspect:
   return new THREE.Vector2(fx, fy);
 };
 
+interface GaussianSplatUniforms {
+  viewport: {value: THREE.Vector2};
+  focal: {value: THREE.Vector2};
+  minAlpha: {value: number};
+  sphereRadius: {value: number};
+  sphereCenter: {value: THREE.Vector3};
+  planeNormal: {value: THREE.Vector3};
+  planeDistance: {value: number};
+  [key: string]: {value: any};
+}
+
 export class GaussianSplatMaterial extends THREE.RawShaderMaterial {
+  private currentCamera?: THREE.PerspectiveCamera | THREE.Camera;
+  private renderer?: THREE.WebGLRenderer;
+
   public set sphereRadius(value: number) {
     this.uniforms.sphereRadius.value = value;
     this.needsUpdate = true;
@@ -36,18 +50,13 @@ export class GaussianSplatMaterial extends THREE.RawShaderMaterial {
     this.needsUpdate = true;
   }
 
-  constructor(private camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer) {
-    const size = new THREE.Vector2();
-    renderer.getSize(size);
-    const dpr = renderer.getPixelRatio();
-
-    const {fov, aspect} = camera;
-    const uniforms = {
+  constructor() {
+    const uniforms: GaussianSplatUniforms = {
       viewport: {
-        value: new THREE.Vector2(size.x * dpr, size.y * dpr),
+        value: new THREE.Vector2(),
       },
       focal: {
-        value: computeFocalLengths(size.x, size.y, fov, aspect, dpr),
+        value: new THREE.Vector2(),
       },
       minAlpha: {
         value: 0.02,
@@ -77,11 +86,24 @@ export class GaussianSplatMaterial extends THREE.RawShaderMaterial {
     window.addEventListener('resize', this.onResize);
   }
 
-  private onResize = () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const dpr = 1;
-    const {fov, aspect} = this.camera;
+  private onResize = (): void => {
+    if (!this.currentCamera) return;
+
+    const size = new THREE.Vector2();
+    this.renderer?.getSize(size);
+    const width = size.x;
+    const height = size.y;
+
+    const dpr = this.renderer?.getPixelRatio() || 1;
+
+    let fov = 75;
+    let aspect = width / height;
+
+    if (this.currentCamera instanceof THREE.PerspectiveCamera) {
+      fov = this.currentCamera.fov;
+      aspect = this.currentCamera.aspect;
+    }
+
     this.uniforms.focal.value = computeFocalLengths(width, height, fov, aspect, dpr);
     this.uniforms.viewport.value = new THREE.Vector2(width * dpr, height * dpr);
   };
@@ -89,5 +111,23 @@ export class GaussianSplatMaterial extends THREE.RawShaderMaterial {
   public dispose(): void {
     window.removeEventListener('resize', this.onResize);
     return super.dispose();
+  }
+
+  public initialize(camera: THREE.PerspectiveCamera | THREE.Camera, renderer: THREE.WebGLRenderer): void {
+    this.renderer = renderer;
+    this.currentCamera = camera;
+    const size = new THREE.Vector2();
+    renderer.getSize(size);
+    const dpr = renderer.getPixelRatio();
+    let fov = 75;
+    let aspect = size.x / size.y;
+
+    if (this.currentCamera instanceof THREE.PerspectiveCamera) {
+      fov = this.currentCamera.fov;
+      aspect = this.currentCamera.aspect;
+    }
+
+    this.uniforms.focal.value = computeFocalLengths(size.x, size.y, fov, aspect, dpr);
+    this.uniforms.viewport.value = new THREE.Vector2(size.x * dpr, size.y * dpr);
   }
 }
