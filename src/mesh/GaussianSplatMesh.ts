@@ -13,6 +13,8 @@ export class GaussianSplatMesh extends THREE.Mesh<GaussianSplatGeometry, Gaussia
   private currentCamera?: THREE.PerspectiveCamera | THREE.Camera;
   private renderer?: THREE.WebGLRenderer;
 
+  public frustumCulled = false;
+
   constructor(private url: string, maxSplats = Infinity) {
     const material = new GaussianSplatMaterial();
     const geometry = new GaussianSplatGeometry(maxSplats);
