@@ -55,7 +55,7 @@ export class GaussianSplatGeometry extends THREE.InstancedBufferGeometry {
     this._sortRunning = false;
   }
 
-  async load(url: string, loadingManager?: THREE.LoadingManager) {
+  async load(url: string, {loadingManager, progressive = true}: {loadingManager?: THREE.LoadingManager; progressive?: boolean} = {}) {
     if (this.loading) {
       console.warn('Geometry is already loading or loaded');
       return;
@@ -65,10 +65,17 @@ export class GaussianSplatGeometry extends THREE.InstancedBufferGeometry {
 
     try {
       const loader = new SplatLoader(undefined, loadingManager);
-      const {data, bytesRead} = await loader.loadAsync(url);
-      const vertexCount = Math.floor(bytesRead / ROW_LENGTH);
-      const bufferInfo = trimBuffer(data, this.maxSplats, vertexCount);
-      this.worker = await new SortWorker(bufferInfo.vertexCount, transfer(bufferInfo.buffer, [bufferInfo.buffer.buffer]));
+      const {data} =
+        progressive && typeof SharedArrayBuffer !== 'undefined' && crossOriginIsolated
+          ? await loader.stream(url, undefined, () => {
+              if (!this.worker) return;
+
+              this.worker.updateGlobalBuffer();
+            })
+          : await loader.loadAsync(url);
+      const vertexCount = Math.min(Math.floor(data.length / ROW_LENGTH), this.maxSplats);
+      const trimmedData = data.subarray(0, vertexCount * ROW_LENGTH);
+      this.worker = await new SortWorker(vertexCount, trimmedData);
       await this.worker.load();
       this.vertexCount = vertexCount;
       this.initAttributes();
@@ -125,10 +132,3 @@ export class GaussianSplatGeometry extends THREE.InstancedBufferGeometry {
 }
 
 const ROW_LENGTH = 3 * 4 + 3 * 4 + 4 + 4;
-
-function trimBuffer(_buffer: Uint8Array, _maxSplats: number, _vertexCount: number): {buffer: Uint8Array; vertexCount: number} {
-  const actualVertexCount = Math.min(_vertexCount, _maxSplats);
-  const actualBufferSize = ROW_LENGTH * actualVertexCount;
-  const buffer = _buffer.slice(0, actualBufferSize);
-  return {buffer, vertexCount: actualVertexCount};
-}

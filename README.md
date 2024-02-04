@@ -121,11 +121,21 @@ To start loading the `.splat` file, call the `load` function.
 splat.load();
 ```
 
+By default, the library will stream in the splat data and render the mesh as it arrives. You can optionally choose to load the entire splat file before rendering by setting the `progressive` option to `false`:
+
+```ts
+splat.load({progressive: false});
+```
+
+> NOTE: Streaming requires you to set up your environment to support [`SharedArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer). For more information, see [Performance](#performance).
+>
+> If `SharedArrayBuffer` is not enabled, the library will load the entire splat file before rendering regardless of what is specified for the `progressive` option.
+
 You may optionally choose to provide a `THREE.LoadingManager` to track the loading progress:
 
 ```ts
 const loadingManager = new THREE.LoadingManager();
-splat.load(loadingManager);
+splat.load({loadingManager});
 ```
 
 ### Adding To Scene
@@ -207,9 +217,28 @@ To aid development, the `MaskMesh` objects are rendered with a wireframe materia
 
 ### Performance
 
-For devices that support `SharedArrayBuffer`, the sorting process within this library is significantly optimized. This feature enhances the efficiency of data handling, leading to faster rendering times and smoother user experiences.
+For devices that support `SharedArrayBuffer`, the sorting process within this library is significantly optimized.
+However, you may also be required to set additional configuration on your server to enable this feature, especially for progressive loading.
 
-To check if your device supports `SharedArrayBuffer`, please refer to <https://caniuse.com/sharedarraybuffer>
+This means you must serve the page over HTTPS & provide a valid `Cross-Origin-Opener-Policy` header. For example:
+
+```
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
+```
+
+Users may see these errors in the console if the above steps are not taken:
+
+```
+Uncaught (in promise) DOMException: SharedArrayBuffer will only be available in a secure context.
+```
+```
+DOMException: Failed to execute 'postMessage' on 'DedicatedWorkerGlobalScope': SharedArrayBuffer transfer requires self.crossOriginIsolated.
+```
+
+For more information, see [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements).
+
+Additionally, to check if your environment supports `SharedArrayBuffer` in the first place, please refer to <https://caniuse.com/sharedarraybuffer>. 
 
 ## How do i get .splat files?
 

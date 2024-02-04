@@ -38,6 +38,11 @@ export class WasmSorter {
     return transfer(bufferToTransfer, [bufferToTransfer]);
   }
 
+  public updateGlobalBuffer(globalBuffer: Uint8Array = this.globalBuffer) {
+    this.globalBuffer = globalBuffer;
+    this.module?.HEAPU8.set(globalBuffer, this.globalBufferPtr);
+  }
+
   public returnBuffer(buffer: ArrayBuffer): void {
     this.bufferPool.returnBuffer(buffer);
   }
