@@ -7,7 +7,7 @@ import {GaussianSplatMesh} from '../src/index';
 // import {Test} from '../src/worker_test';
 const bonsai = new URL('./bonsai.splat', import.meta.url).href;
 const splat = new GaussianSplatMesh(bonsai, 1000000);
-splat.load();
+splat.load({progressive: true});
 scene.add(splat);
 
 renderer.setAnimationLoop(animation);

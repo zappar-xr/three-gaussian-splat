@@ -20,8 +20,8 @@ export class GaussianSplatMesh extends THREE.Mesh<GaussianSplatGeometry, Gaussia
     this.rotation.x = Math.PI;
   }
 
-  public load(loadingManager?: THREE.LoadingManager) {
-    return this.geometry.load(this.url, loadingManager);
+  public load(config?: Parameters<GaussianSplatGeometry['load']>[1]) {
+    return this.geometry.load(this.url, config);
   }
 
   private _normal = new THREE.Vector3(0, 0, 1);
