@@ -42,20 +42,20 @@ You can use this library by <!--  downloading a standalone zip containing the ne
 <!-- ### Standalone Download
 
 Download the bundle from:
-<https://libs.zappar.com/three-guassian-splat/CI_COMMIT_TAG/three-guassian-splat.zip>
+<https://libs.zappar.com/three-gaussian-splat/CI_COMMIT_TAG/three-gaussian-splat.zip>
 
 Unzip into your web project and reference from your HTML like this:
 
 ```html
-<script src="three-guassian-splat.js"></script>
+<script src="three-gaussian-splat.js"></script>
 ```
 
 ### CDN
 
-Reference the three-guassian-splat.js library from your HTML like this:
+Reference the three-gaussian-splat.js library from your HTML like this:
 
 ```html
-<script src="https://libs.zappar.com/three-guassian-splat/CI_COMMIT_TAG/three-guassian-splat.js"></script>
+<script src="https://libs.zappar.com/three-gaussian-splat/CI_COMMIT_TAG/three-gaussian-splat.js"></script>
 ``` -->
 
 ### NPM Package
@@ -63,13 +63,13 @@ Reference the three-guassian-splat.js library from your HTML like this:
 Run the following NPM command inside your project directory:
 
 ```bash
-npm install --save @zappar/three-guassian-splat
+npm install --save @zappar/three-gaussian-splat
 ```
 
 Then import the library into your JavaScript or TypeScript files:
 
 ```ts
-import * as ZapSplat from '@zappar/three-guassian-splat';
+import * as ZapSplat from '@zappar/three-gaussian-splat';
 ```
 
 _Please note - This library supports Webpack 5 and later._
